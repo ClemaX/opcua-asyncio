@@ -209,7 +209,10 @@ class InternalServer:
                 edp1 = copy(edp)
                 url = urlparse(edp1.EndpointUrl)
                 if self.match_discovery_source_ip:
-                    url = url._replace(netloc=sockname[0] + ':' + str(sockname[1]))
+                    sockaddr, sockport = sockname[0], sockname[1]
+                    if ':' in sockaddr:
+                        sockaddr = f'[{sockaddr}]'
+                    url = url._replace(netloc=f'{sockaddr}:{sockport}')
                 edp1.EndpointUrl = url.geturl()
                 edps.append(edp1)
             return edps
